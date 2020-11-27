@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/HectorLiAd/ExamenLP2CrudAPI/curso"
 	"github.com/HectorLiAd/ExamenLP2CrudAPI/database"
 	"github.com/HectorLiAd/ExamenLP2CrudAPI/docente"
 	"github.com/go-chi/chi"
@@ -17,16 +18,19 @@ func main() {
 
 	var (
 		docenteRepository = docente.NewRepository(db)
+		cursoRepository   = curso.NewRepository(db)
 	)
 
 	var (
 		docenteService = docente.NerService(docenteRepository)
+		cursoService   = curso.NerService(cursoRepository)
 	)
 
 	r := chi.NewRouter()
 
 	// r.Use(helper.GetCors().Handler)
 	r.Mount("/docente", docente.MakeHTTPSHandler(docenteService))
+	r.Mount("/curso", curso.MakeHTTPSHandler(cursoService))
 
 	PORT := os.Getenv("PORT")
 	if PORT == "" {
@@ -34,4 +38,6 @@ func main() {
 	}
 
 	http.ListenAndServe(":"+PORT, r)
+
+	// https://examenlp2.herokuapp.com/
 }

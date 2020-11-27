@@ -1,6 +1,7 @@
-package docente
+package curso
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/HectorLiAd/ExamenLP2CrudAPI/models"
@@ -8,7 +9,7 @@ import (
 
 /*Service interface para los sercicios*/
 type Service interface {
-	CrearDocente(params *addDocenteRequest) (*models.ResultData, error)
+	CrearCurso(params *addCursoRequest) (*models.ResultData, error)
 }
 
 type service struct {
@@ -21,14 +22,16 @@ func NerService(repo Repository) Service {
 		repo: repo,
 	}
 }
-
-func (s service) CrearDocente(params *addDocenteRequest) (*models.ResultData, error) {
-	result, err := s.repo.CrearDocente(params)
+func (s service) CrearCurso(params *addCursoRequest) (*models.ResultData, error) {
+	result, err := s.repo.CrearCurso(params)
 	if err != nil {
 		return nil, err
 	}
+	if result == -1 {
+		return nil, errors.New("Verifique de que el usuario exista y valida los datos")
+	}
 	resultado := &models.ResultData{
-		Mensaje:     "Se guardo correctamente a " + params.Nombre + " con el id " + strconv.Itoa(result),
+		Mensaje:     "Se guardo correctamente " + params.Nombre + " con el id " + strconv.Itoa(result),
 		CodEfectado: strconv.Itoa(result),
 	}
 	return resultado, nil
